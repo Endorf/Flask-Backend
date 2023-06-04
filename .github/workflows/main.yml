@@ -1,5 +1,8 @@
 name: Flask workflow
 env:
+  EB_BUCKET_NAME: "${{ secrets.AWS_BUCKET_NAME }}"
+  EB_APP_NAME: ""
+  EB_ENV_NAME: ""
   ENV_PACKAGE_NAME: "web_app_${{ github.sha }}.zip"
 
 on:
@@ -16,13 +19,22 @@ jobs:
   flask:
     name: "Flask"
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION_NAME: ${{ secrets.AWS_REGION_NAME }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: zip
+      - name: Zip
+        id: zip
         run: zip -r ${{ env.ENV_PACKAGE_NAME }} ./ -x *.git* README.md 
+
+      - name: Push to S3
+        id: push
+        run: aws s3 cp ${{ env.ENV_PACKAGE_NAME }}  s3://${{ env.EB_BUCKET_NAME }}/
 
       
       
