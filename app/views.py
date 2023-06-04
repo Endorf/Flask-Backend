@@ -48,10 +48,7 @@ def get_data():
     print(email)
     password = request.form.get('password')
 
-    if not password:
-        return redirect(url_for('login'))
-
-    if email in usersData:
+    if (password) and (email in usersData):
         return redirect(url_for('index'))
     else:
         return redirect(url_for('login'))
