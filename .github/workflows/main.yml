@@ -16,7 +16,7 @@ jobs:
   flask:
     name: "Flask"
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
 
       - name: Push to S3
         id: s3
-        run: aws s3 cp ${{ env.ENV_PACKAGE_NAME }}  s3://${{ env.AWS_BUCKET_NAME }}/${{ env.ENV_PACKAGE_NAME }}
+        run: aws s3 cp ${{ env.ENV_PACKAGE_NAME }}  s3://${{ secrets.AWS_BUCKET_NAME }}/${{ env.ENV_PACKAGE_NAME }}
 
       
       
