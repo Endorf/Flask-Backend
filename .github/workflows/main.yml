@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - workflows
   pull_request:
     paths-ignore:
       - '**.md'
