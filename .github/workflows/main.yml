@@ -1,6 +1,6 @@
 name: Flask workflow
 env:
-  ENV_PACKAGE_NAME: "web_app_${{ github.sha }}.zip"
+  ENV_PACKAGE_NAME: "web_app_${{ steps.commit_timestamp.outputs.timestamp }}_${{ github.sha }}.zip"
 
 on:
   push:
