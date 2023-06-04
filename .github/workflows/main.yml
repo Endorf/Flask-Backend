@@ -1,0 +1,29 @@
+name: Flask workflow
+env:
+  ENV_PACKAGE_NAME: "${{ github.sha }}.zip"
+
+on:
+  push:
+    branches:
+      - main
+      - workflows
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+
+jobs:
+  flask:
+    name: "Flask"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: zip
+        run: zip -r ${{ env.ENV_PACKAGE_NAME }} ./ -x *.git
+
+      
+      
+    
