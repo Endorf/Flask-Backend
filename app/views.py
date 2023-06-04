@@ -1,7 +1,5 @@
 from app import app
 
-from functools import wraps
-
 from flask import jsonify
 from flask import render_template
 from flask import make_response, redirect, request, url_for
@@ -53,17 +51,11 @@ def get_data():
     if not password:
         return redirect(url_for('login'))
 
-    if is_user_exists(email):
+    if email in usersData:
         return redirect(url_for('index'))
     else:
         return redirect(url_for('login'))
-
-def is_user_exists(email):
-    if email in usersData:
-        return True
-    else:
-        return False
-
+        
 
 # API
 
