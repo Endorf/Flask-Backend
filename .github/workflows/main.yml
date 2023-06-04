@@ -1,6 +1,6 @@
 name: Flask workflow
 env:
-  ENV_PACKAGE_NAME: "web_app_${{ steps.commit_timestamp.outputs.timestamp }}_${{ github.sha }}.zip"
+  ENV_PACKAGE_NAME: "web_app_${{ github.sha }}.zip"
 
 on:
   push:
@@ -15,6 +15,8 @@ jobs:
   flask:
     name: "Flask"
     runs-on: ubuntu-latest
+    env:
+      FILE_NAME: "${{ steps.commit_timestamp.outputs.timestamp }}_${{ env.ENV_PACKAGE_NAME }}"
 
     steps:
       - name: Checkout
