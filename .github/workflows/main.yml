@@ -36,7 +36,7 @@ jobs:
         id: deploy
         run: |
           aws deploy create-deployment \
-            --application-name "web_app" \
+            --application-name "web-app" \
             --deployment-group-name dev \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
