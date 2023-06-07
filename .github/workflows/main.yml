@@ -1,9 +1,4 @@
 name: Flask workflow
-env:
-  ENV_PACKAGE_NAME: "web_app_$(date +%Y%m%d%H%M)_${{ github.sha }}.zip"
-  ENV_NAME: "web_app"
-  ENV_PACKAGE_VERSION: "v0.0.1"
-  ENV_PACKAGE_VERSION_DESCRIPTION: "some data from ${{ env.ENV_PACKAGE_VERSION }}"
 
 on:
   push:
