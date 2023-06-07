@@ -4,6 +4,10 @@ files:
   - source: /
     destination: /home/ec2-user/flask-app
 hooks:
+  BeforeInstall:
+   - location: scripts/delete_app
+     timeout: 300
+     runas: root
   AfterInstall:
    - location: scripts/install_app_dependencies
      timeout: 300
