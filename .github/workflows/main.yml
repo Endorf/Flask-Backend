@@ -1,40 +1,47 @@
 name: Flask workflow
 env:
   ENV_PACKAGE_NAME: "web_app_$(date +%Y%m%d%H%M)_${{ github.sha }}.zip"
+  ENV_NAME: "web_app"
+  ENV_PACKAGE_VERSION: "v0.0.1"
+  ENV_PACKAGE_VERSION_DESCRIPTION: "some data from ${{ env.ENV_PACKAGE_VERSION }}"
 
 on:
   push:
     branches:
       - main
+      - deploy
   pull_request:
     paths-ignore:
       - '**.md'
 
 
 jobs:
-  flask:
-    name: "Flask"
+  ci:
+    name: "Build"
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Zip
-        id: zip
-        run: zip -r ${{ env.ENV_PACKAGE_NAME }} ./ -x *.git* README.md 
+  cd:
+    name: "Deploy"
+    runs-on: ubuntu-latest
+    needs: [ci]
 
-      - name: Configure AWS credentials
+    steps:
+      - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION_NAME }}
 
-      - name: Push to S3
-        id: s3
-        run: aws s3 cp ${{ env.ENV_PACKAGE_NAME }}  s3://${{ secrets.AWS_BUCKET_NAME }}/${{ env.ENV_PACKAGE_NAME }}
-
-      
-      
-    
+      - name: Create CodeDeploy Deployment
+        id: deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ var.ENV_NAME }} \
+            --deployment-group-name AppDeploymentGroupName \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
