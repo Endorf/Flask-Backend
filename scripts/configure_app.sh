@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /var/www/flask-app
+cd /var/www/flask-app || exit
 export FLASK_APP=run.py
 export FLASK_ENV=production
 
