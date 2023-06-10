@@ -1,0 +1,9 @@
+#!/bin/bash
+yum update
+yum install -y nginx
+
+cd /var/www/flask-app
+ln -s /var/www/flask-app/nginx.conf /etc/nginx/conf.d/site.conf
+
+systemctl reload nginx
+systemctl restart nginx
