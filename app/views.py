@@ -1,9 +1,11 @@
 from app import app
 
+from .service.common import status
+
 from flask import jsonify
 from flask import render_template
 from flask import make_response, redirect, request, url_for
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # Storage
 
@@ -64,7 +66,7 @@ def get_data():
         return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
-        
+
 
 # API
 
@@ -73,3 +75,9 @@ def users():
     response = make_response(jsonify(usersData))
     response.set_cookie('test', "user-config", expires=0)
     return response
+
+
+@app.route("/health")
+def health():
+    """Health Status"""
+    return jsonify(dict(status="OK")), status.HTTP_200_OK
