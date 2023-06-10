@@ -32,6 +32,7 @@ usersData = {
 def index():
     return render_template("public/auth.html")
 
+
 @app.route("/dashboard")
 def dashboard():
     return render_template(
