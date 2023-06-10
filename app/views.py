@@ -31,6 +31,10 @@ usersData = {
 def index():
     return render_template("public/auth.html")
 
+@app.route("/dashboard")
+def dashboard():
+    return render_template("public/index.html")
+
 
 @app.route("/login")
 def login():
@@ -49,7 +53,7 @@ def get_data():
     password = request.form.get('password')
 
     if (password) and (email in usersData):
-        return redirect(url_for('index'))
+        return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
         
