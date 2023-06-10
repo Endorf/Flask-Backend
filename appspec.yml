@@ -1,17 +1,18 @@
 version: 0.0
 os: linux
 files:
-  - source: /index.html
-    destination: /var/www/html/
+  - source: /
+    destination: /var/www/flask-app/
 hooks:
   BeforeInstall:
     - location: scripts/install_app_dependencies
       timeout: 300
       runas: root
-    - location: scripts/start_server
+  AfterInstall:
+    - location: scripts/configure_app
       timeout: 300
       runas: root
-  ApplicationStop:
-    - location: scripts/stop_server
+  ApplicationStart:
+    - location: scripts/start_app
       timeout: 300
       runas: root
