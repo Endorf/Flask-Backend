@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /var/www/flask-app
 python3 -m venv .venv
-source .venv/bin/activate
+source /var/www/flask-app/.venv/bin/activate
 
 pip3 install --upgrade pip
 pip3 install -r requirements.txt
