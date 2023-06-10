@@ -1,8 +1,11 @@
 from app import app
 
+from .service.common import status
+
 from flask import jsonify
 from flask import render_template
 from flask import make_response, redirect, request, url_for
+from datetime import datetime
 
 # Storage
 
@@ -29,7 +32,18 @@ usersData = {
 
 @app.route("/")
 def index():
-    return render_template("public/index.html")
+    return render_template("public/auth.html")
+
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template(
+        "public/index.html",
+        data='',
+        data_expiration=' No data ',
+        details='Server time:',
+        time=datetime.utcnow().strftime('%H:%M:%S'),
+    )
 
 
 @app.route("/login")
@@ -49,10 +63,10 @@ def get_data():
     password = request.form.get('password')
 
     if (password) and (email in usersData):
-        return redirect(url_for('index'))
+        return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
-        
+
 
 # API
 
@@ -61,3 +75,9 @@ def users():
     response = make_response(jsonify(usersData))
     response.set_cookie('test', "user-config", expires=0)
     return response
+
+
+@app.route("/health")
+def health():
+    """Health Status"""
+    return jsonify(dict(status="OK")), status.HTTP_200_OK
