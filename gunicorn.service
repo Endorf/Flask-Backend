@@ -5,7 +5,7 @@ After=network.target
 User=ec2-user
 Group=ec2-user
 WorkingDirectory=/var/www/flask-app
-ExecStart=/var/www/flask-app/.venv/bin/gunicorn -b localhost:8000 app:app
+ExecStart=/var/www/flask-app/.venv/bin/gunicorn --config gunicorn.conf.py run:app
 Restart=always
 [Install]
 WantedBy=multi-user.target

@@ -1,4 +1,2 @@
 #!/bin/bash
-cd /var/www/flask-app
-
-.venv/bin/gunicorn --config gunicorn.conf.py run:app
+systemctl start gunicorn
