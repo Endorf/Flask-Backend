@@ -29,7 +29,7 @@ usersData = {
 
 @app.route("/")
 def index():
-    return render_template("public/index.html")
+    return render_template("public/auth.html")
 
 
 @app.route("/login")
