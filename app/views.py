@@ -39,7 +39,7 @@ def dashboard():
         "public/index.html",
         data='',
         data_expiration=' No data ',
-        details='Current time:',
+        details='Server time:',
         time=datetime.utcnow().strftime('%H:%M:%S'),
     )
 
