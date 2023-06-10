@@ -1,6 +1,6 @@
 #!/bin/bash
-mkdir -p /var/www/flask-app || exit
-cd /var/www/flask-app
+mkdir -p /var/www/flask-app
+cd /var/www/flask-app || exit
 
 yum install python3-pip -y
 
