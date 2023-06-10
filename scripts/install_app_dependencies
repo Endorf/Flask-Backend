@@ -1,10 +1,11 @@
 #!/bin/bash
+mkdir /var/www/flask-app/
 cd /var/www/flask-app
 python3 -m venv .venv
 source /var/www/flask-app/.venv/bin/activate
 
-pip3 install --upgrade pip
-pip3 install Flask gunicorn
-pip3 install -r requirements.txt
+pip install --upgrade pip
+pip install Flask gunicorn
+pip install -r requirements.txt
 
 deactivate
