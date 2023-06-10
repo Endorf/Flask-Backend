@@ -3,8 +3,10 @@ class Config(object):
     TESTING = False
     SESSION_PERMANENT = False
 
+
 class ProductionConfig(Config):
     pass
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
