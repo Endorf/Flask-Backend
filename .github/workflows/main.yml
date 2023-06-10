@@ -1,10 +1,9 @@
-name: Flask workflow
+name: Deploy workflow
 
 on:
   push:
     branches:
       - main
-      - deploy
   pull_request:
     paths-ignore:
       - '**.md'
