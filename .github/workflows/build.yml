@@ -3,7 +3,7 @@ name: Build workflow
 on:
   push:
     branches:
-      - deploy
+      - main
   pull_request:
     paths-ignore:
       - '**.md'
