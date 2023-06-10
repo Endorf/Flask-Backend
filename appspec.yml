@@ -12,6 +12,9 @@ hooks:
     - location: scripts/configure_app
       timeout: 300
       runas: root
+    - location: scripts/install_nginx
+      timeout: 300
+      runas: root
   ApplicationStart:
     - location: scripts/start_app
       timeout: 300
