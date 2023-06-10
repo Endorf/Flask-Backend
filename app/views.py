@@ -3,6 +3,7 @@ from app import app
 from flask import jsonify
 from flask import render_template
 from flask import make_response, redirect, request, url_for
+from datetime import datetime, timedelta
 
 # Storage
 
@@ -33,7 +34,13 @@ def index():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("public/index.html")
+    return render_template(
+        "public/index.html",
+        data='',
+        data_expiration=' No data ',
+        details='Current time:',
+        time=datetime.utcnow().strftime('%H:%M:%S'),
+    )
 
 
 @app.route("/login")
