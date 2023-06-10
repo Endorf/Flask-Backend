@@ -1,4 +1,4 @@
 #!/bin/bash
 cd /var/www/flask-app
 
-gunicorn --config gunicorn.conf.py run:app
+.venv/bin/gunicorn --config gunicorn.conf.py run:app
