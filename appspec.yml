@@ -4,6 +4,10 @@ files:
   - source: /
     destination: /var/www/flask-app/
 hooks:
+  ApplicationStop:
+    - location: scripts/application_stop
+      timeout: 300
+      runas: root
   BeforeInstall:
     - location: scripts/install_app_dependencies
       timeout: 300
