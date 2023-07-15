@@ -9,7 +9,6 @@
 
 .wrap-container {
     padding: 60px 30px;
-    width: 600px;
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 1px 1px 6px rgb(0 0 0 / 25%);
@@ -48,8 +47,6 @@
     padding-left: 160px;
 }
 
-
-
 .new-row {
     flex-wrap: initial;
 }
@@ -58,8 +55,21 @@
     width:70px;
     vertical-align: top;
 }
-
+.main-table-text-content-token {
+    white-space: pre;
+    height:50px;
+    width:1020px;
+    overflow-y:scroll;
+    overflow-x:scroll;
+    display:block;
+}
 .main-table-text-content {
+    white-space: pre;
+    height:300px;
+    width:1020px;
+    overflow-y:scroll;
+    overflow-x:scroll;
+    display:block;
 }
 .text-title {
   height: 100px;
