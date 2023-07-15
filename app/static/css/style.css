@@ -11,6 +11,7 @@
     padding: 60px 30px;
     background-color: #fff;
     border-radius: 4px;
+    width:600px;
     box-shadow: 1px 1px 6px rgb(0 0 0 / 25%);
     display: flex;
     flex-direction:column;
@@ -63,7 +64,8 @@
     overflow-x:scroll;
     display:block;
 }
-.main-table-text-content {
+
+.main-table-text-content-details {
     white-space: pre;
     height:300px;
     width:1020px;
@@ -71,6 +73,8 @@
     overflow-x:scroll;
     display:block;
 }
+.main-table-text-content {}
+
 .text-title {
   height: 100px;
   line-height: 100px;
