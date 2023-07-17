@@ -8,3 +8,4 @@ else:
     app.config.from_object("config.DevelopmentConfig")
 
 from app import views
+from app import routes
