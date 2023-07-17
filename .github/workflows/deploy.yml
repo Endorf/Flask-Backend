@@ -3,7 +3,7 @@ name: Deploy workflow
 on:
   push:
     branches:
-      - main
+      - none # main. suspended due to testing purposes. 
 
 jobs:
   ci:
