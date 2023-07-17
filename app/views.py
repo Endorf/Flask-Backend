@@ -36,10 +36,13 @@ oauth.register(
 
 @app.route("/")
 def index():
-    return render_template(
-        "public/auth.html",
-        session=session.get("user"),
-    )
+    if "user" in session:
+        return redirect(url_for("dashboard"))
+    else: 
+        return render_template(
+            "public/auth.html",
+            session=session.get("user"),
+        )
 
 
 @app.route("/callback")
@@ -82,13 +85,16 @@ def loggedOut():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template(
-        "public/index.html",
-        data='',
-        data_expiration=session["user"]["id_token"],
-        details=json.dumps(session.get("user"), indent=4),
-        time=datetime.utcnow().strftime('%H:%M:%S'),
-    )
+    if "user" in session:
+        return render_template(
+            "public/index.html",
+            data='',
+            data_expiration=session["user"]["id_token"],
+            details=json.dumps(session.get("user"), indent=4),
+            time=datetime.utcnow().strftime('%H:%M:%S'),
+        )
+    else:
+        return redirect(url_for("index"))
 
 
 # Storage
