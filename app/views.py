@@ -10,13 +10,18 @@ from authlib.integrations.flask_client import OAuth
 import json
 from urllib.parse import quote_plus, urlencode
 
+# TODO: add token expiration checks
+# TODO: handle errors on UI
+# TODO: move out to separate client network calls
+# TODO: move out refresh token to secure session
+# TODO: investigate ciba
+
 
 appConf = {
     "OAUTH2_CLIENT_ID": "test_web_app",
     "OAUTH2_CLIENT_SECRET": "BbyZrpYjSf6JRxOEs1tVBFUcYVcfAYIQ",
     "OAUTH2_ISSUER": "http://localhost:8080/realms/myorg",
     "OAUTH2_ISSUER_HOST": "http://localhost:8080",
-    "USERS_ENDPOINT": "/admin/realms/myorg/users",
     "FLASK_SECRET": "somelongrandomstring",
     "FLASK_PORT": 5000
 }
@@ -43,13 +48,17 @@ def index():
         return redirect(url_for("dashboard"))
     else: 
         return render_template(
-            "public/auth.html",
+            "public/signin.html",
             session=session.get("user"),
         )
 
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    if "user" in session:
+        print(session["user"])
+        return redirect(url_for("dashboard"))
+
     if request.method == 'GET':
         return render_template("public/signup.html")
     elif request.method == 'POST':
@@ -61,11 +70,40 @@ def signup():
             abort(404)
         else:
             isSuccesfullySubmited = _submitNewUser(email, password, accessToken)
-            print(f"submitNewUser: ${isSuccesfullySubmited}")
+            if (isSuccesfullySubmited):
+                isSuccesfullyAuthenticateed = _authenticateUser(email, password)
+                if(isSuccesfullyAuthenticateed):
+                    return redirect(url_for("dashboard")) 
+
 
         return render_template("public/signup.html")
     else:
         abort(404)
+
+
+def _authenticateUser(email, password):
+    post_body = f"client_id={ appConf.get('OAUTH2_CLIENT_ID') }&client_secret={ appConf.get('OAUTH2_CLIENT_SECRET') }&grant_type=password&scope=email roles profile&username={email.split('@')[0]}&password={password}"
+    headers = {'Content-Type': "application/x-www-form-urlencoded"}
+    url = appConf.get("OAUTH2_ISSUER")+"/protocol/openid-connect/token"
+
+    accessTokenResp = requests.post(
+        url,
+        data=post_body,
+        headers=headers
+    )
+    accessTokenRespJson = accessTokenResp.json()
+    print(f"${accessTokenRespJson}")
+
+    if not "access_token" in accessTokenRespJson:
+        abort(401)
+    else:
+        session["user"] = accessTokenRespJson
+        print(session)
+        session["access_token"] = accessTokenRespJson["access_token"]
+        session["refresh_token"] = accessTokenRespJson["refresh_token"]
+
+
+    return accessTokenResp.ok
 
 
 def _submitNewUser(email, password, accessToken):
@@ -74,9 +112,9 @@ def _submitNewUser(email, password, accessToken):
         "email": email,
         "enabled": True,
         "credentials": [{
-        "type": "password",
-        "value": password,
-        "temporary": False
+            "type": "password",
+            "value": password,
+            "temporary": False
         }],
         "groups":[]
     }
@@ -84,7 +122,7 @@ def _submitNewUser(email, password, accessToken):
         'Authorization': "Bearer " + accessToken,
         'Content-Type': "application/json; charset=utf-8",
     }
-    url =  appConf.get("OAUTH2_ISSUER_HOST") + appConf.get("USERS_ENDPOINT")
+    url =  appConf.get("OAUTH2_ISSUER_HOST") + "/admin/realms/myorg/users"
 
     accessTokenResp = requests.post(
         url,
@@ -121,10 +159,16 @@ def _retrieveAdminAccessToken():
 
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
+    if "user" in session:
+        return redirect(url_for("dashboard"))
     if request.method == 'GET':
         return render_template("public/signin.html")
     elif request.method == 'POST':
-        abort(403)
+        email = request.form.get('email')
+        password = request.form.get('password')
+        isSuccesfullyAuthenticateed = _authenticateUser(email, password)
+        if(isSuccesfullyAuthenticateed):
+            return redirect(url_for("dashboard")) 
         # if "user" in session:
         #     abort(404)
         # return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
@@ -141,19 +185,39 @@ def callback():
 
 @app.route("/logout", methods=["POST"])
 def logout():
-    id_token = session["user"]["id_token"]
-    session.clear()
-    return redirect(
-        appConf.get("OAUTH2_ISSUER")
-        + "/protocol/openid-connect/logout?"
-        + urlencode(
-            {
-                "post_logout_redirect_uri": url_for("loggedOut", _external=True),
-                "id_token_hint": id_token
-            },
-            quote_via=quote_plus,
-        )
+    # id_token = session["user"]["id_token"]
+    # session.clear()
+    # return redirect(
+    #     appConf.get("OAUTH2_ISSUER")
+    #     + "/protocol/openid-connect/logout?"
+    #     + urlencode(
+    #         {
+    #             "post_logout_redirect_uri": url_for("loggedOut", _external=True),
+    #             "id_token_hint": id_token
+    #         },
+    #         quote_via=quote_plus,
+    #     )
+    # )
+    post_body = f"client_id={ appConf.get('OAUTH2_CLIENT_ID') }&client_secret={ appConf.get('OAUTH2_CLIENT_SECRET') }&refresh_token={ session['user']['refresh_token'] }"
+    headers = {
+        'Content-Type': "application/x-www-form-urlencoded",
+        'Authorization': "Bearer " + session["user"]["access_token"],
+    }
+    url = appConf.get("OAUTH2_ISSUER")+"/protocol/openid-connect/logout"
+
+    accessTokenResp = requests.post(
+        url,
+        data=post_body,
+        headers=headers
     )
+
+    if(accessTokenResp.ok):
+        session.clear()
+
+    return redirect(url_for("index"))
+
+
+    
 
 
 @app.route("/loggedout")
@@ -165,16 +229,27 @@ def loggedOut():
 
 @app.route("/dashboard")
 def dashboard():
+    print("dashboard")
     if "user" in session:
-        return render_template(
-            "public/index.html",
-            data='',
-            data_expiration=session["user"]["id_token"],
-            details=json.dumps(session.get("user"), indent=4),
-            time=datetime.utcnow().strftime('%H:%M:%S'),
-        )
-    else:
-        return redirect(url_for("index"))
+            return render_template(
+                "public/index.html",
+                data='',
+                data_expiration=session["user"]["access_token"],
+                details=json.dumps(session.get("user"), indent=4),
+                time=datetime.utcnow().strftime('%H:%M:%S'),
+            )
+    # if "user" in session:
+    #     if "access_token" in session["user"]:
+    #         return render_template(
+    #             "public/index.html",
+    #             data='',
+    #             # data_expiration=session["user"]["id_token"],
+    #             data_expiration=session["user"]["access_token"],
+    #             details=json.dumps(session.get("user"), indent=4),
+    #             time=datetime.utcnow().strftime('%H:%M:%S'),
+    #         )
+    
+    return redirect(url_for("index"))
 
 
 # Storage
