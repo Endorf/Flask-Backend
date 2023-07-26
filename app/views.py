@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import jsonify
 from flask import render_template
 from flask import make_response, redirect, abort, request, session, url_for
+import requests
 from authlib.integrations.flask_client import OAuth
 
 import json
@@ -14,6 +15,8 @@ appConf = {
     "OAUTH2_CLIENT_ID": "test_web_app",
     "OAUTH2_CLIENT_SECRET": "BbyZrpYjSf6JRxOEs1tVBFUcYVcfAYIQ",
     "OAUTH2_ISSUER": "http://localhost:8080/realms/myorg",
+    "OAUTH2_ISSUER_HOST": "http://localhost:8080",
+    "USERS_ENDPOINT": "/admin/realms/myorg/users",
     "FLASK_SECRET": "somelongrandomstring",
     "FLASK_PORT": 5000
 }
@@ -45,14 +48,75 @@ def index():
         )
 
 
-@app.route("/signup", methods=["GET"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == 'GET':
         return render_template("public/signup.html")
     elif request.method == 'POST':
-        pass
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        accessToken = _retrieveAdminAccessToken()
+        if(accessToken == ""):
+            abort(404)
+        else:
+            isSuccesfullySubmited = _submitNewUser(email, password, accessToken)
+            print(f"submitNewUser: ${isSuccesfullySubmited}")
+
+        return render_template("public/signup.html")
     else:
         abort(404)
+
+
+def _submitNewUser(email, password, accessToken):
+    post_body = {
+        "username": email.split("@")[0],
+        "email": email,
+        "enabled": True,
+        "credentials": [{
+        "type": "password",
+        "value": password,
+        "temporary": False
+        }],
+        "groups":[]
+    }
+    headers = {
+        'Authorization': "Bearer " + accessToken,
+        'Content-Type': "application/json; charset=utf-8",
+    }
+    url =  appConf.get("OAUTH2_ISSUER_HOST") + appConf.get("USERS_ENDPOINT")
+
+    accessTokenResp = requests.post(
+        url,
+        json=post_body,
+        headers=headers
+    )
+    return accessTokenResp.ok
+
+
+def _retrieveAdminAccessToken():
+    post_body = {
+        "grant_type": "client_credentials",
+        "client_id": appConf.get("OAUTH2_CLIENT_ID"),
+        "client_secret": appConf.get("OAUTH2_CLIENT_SECRET"),
+        "scope": ["test_api_access"]
+    }
+    headers = {'Content-Type': "application/x-www-form-urlencoded"}
+    url = appConf.get("OAUTH2_ISSUER")+"/protocol/openid-connect/token"
+
+    accessTokenResp = requests.post(
+        url,
+        data=post_body,
+        headers=headers
+    )
+    
+    if not accessTokenResp.ok:
+        return ""
+    else:
+        accessTokenRespJson = accessTokenResp.json()
+        if not "access_token" in accessTokenRespJson:
+            return ""
+        return accessTokenRespJson["access_token"]
 
 
 @app.route("/signin", methods=["GET", "POST"])
@@ -60,13 +124,12 @@ def signin():
     if request.method == 'GET':
         return render_template("public/signin.html")
     elif request.method == 'POST':
-        if "user" in session:
-            abort(404)
-        return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
+        abort(403)
+        # if "user" in session:
+        #     abort(404)
+        # return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
     else: 
         abort(404)
-
-    
 
 
 @app.route("/callback", methods=["POST"])
