@@ -43,13 +43,30 @@ def index():
             "public/auth.html",
             session=session.get("user"),
         )
- 
 
-@app.route("/signin", methods=["POST"])
-def signin():
-    if "user" in session:
+
+@app.route("/signup", methods=["GET"])
+def signup():
+    if request.method == 'GET':
+        return render_template("public/signup.html")
+    elif request.method == 'POST':
+        pass
+    else:
         abort(404)
-    return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
+
+
+@app.route("/signin", methods=["GET", "POST"])
+def signin():
+    if request.method == 'GET':
+        return render_template("public/signin.html")
+    elif request.method == 'POST':
+        if "user" in session:
+            abort(404)
+        return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
+    else: 
+        abort(404)
+
+    
 
 
 @app.route("/callback", methods=["POST"])

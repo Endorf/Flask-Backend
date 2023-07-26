@@ -8,7 +8,7 @@
 }
 
 .wrap-container {
-    padding: 60px 30px;
+    padding: 20px 30px;
     background-color: #fff;
     border-radius: 4px;
     width:600px;
@@ -33,6 +33,22 @@
     border-color: rgb(8,124,252, .3);
     border-radius: 0.35rem;
 }
+
+.btn-auth-submit {
+    margin-top: 38px;
+}
+
+.div-sign-up-redirect-container {
+    text-align: center;
+    padding: 30px;
+}
+.lnk-sign-up-redirect {
+    padding: 0px;
+}
+.btn-sign-ip-redirect {
+    padding: 40px;
+}
+
 .btn-sign-with {
     background:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png') no-repeat left center;
     background-padding: 10px;
