@@ -43,20 +43,20 @@ def index():
             "public/auth.html",
             session=session.get("user"),
         )
+ 
+
+@app.route("/signin", methods=["POST"])
+def signin():
+    if "user" in session:
+        abort(404)
+    return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
 
 
-@app.route("/callback")
+@app.route("/callback", methods=["POST"])
 def callback():
     token = oauth.notesApp.authorize_access_token()
     session["user"] = token
     return redirect(url_for("dashboard"))
-
-
-@app.route("/login", methods=["POST"])
-def login():
-    if "user" in session:
-        abort(404)
-    return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
 
 
 @app.route("/logout", methods=["POST"])
