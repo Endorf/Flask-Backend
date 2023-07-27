@@ -86,7 +86,7 @@ def signup():
 def _authenticateUser(email, password):
     post_body = f"client_id={ appConf.get('OAUTH2_CLIENT_ID') }&client_secret={ appConf.get('OAUTH2_CLIENT_SECRET') }&grant_type=password&scope=email roles profile&username={email.split('@')[0]}&password={password}"
     headers = {'Content-Type': "application/x-www-form-urlencoded"}
-    url = appConf.get("OAUTH2_ISSUER")+"/protocol/openid-connect/token"
+    url = appConf.get("OAUTH2_ISSUER") + "/protocol/openid-connect/token"
 
     accessTokenResp = requests.post(
         url,
@@ -142,7 +142,7 @@ def _retrieveAdminAccessToken():
         "scope": ["test_api_access"]
     }
     headers = {'Content-Type': "application/x-www-form-urlencoded"}
-    url = appConf.get("OAUTH2_ISSUER")+"/protocol/openid-connect/token"
+    url = appConf.get("OAUTH2_ISSUER") + "/protocol/openid-connect/token"
 
     accessTokenResp = requests.post(
         url,
@@ -205,7 +205,7 @@ def logout():
         'Content-Type': "application/x-www-form-urlencoded",
         'Authorization': "Bearer " + session["user"]["access_token"],
     }
-    url = appConf.get("OAUTH2_ISSUER")+"/protocol/openid-connect/logout"
+    url = appConf.get("OAUTH2_ISSUER") + "/protocol/openid-connect/logout"
 
     accessTokenResp = requests.post(
         url,

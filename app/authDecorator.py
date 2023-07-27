@@ -43,11 +43,14 @@ def requireAuthFactory(issuer=None):
         def decorator(f):
             @wraps(f)
             def decorated_function(*args, **kwargs):
-                accessToken = (request.headers.get('Authorization', "")
-                    .replace("Bearer ", ""))
+                accessToken = (
+                    request.headers.get('Authorization', "")
+                    .replace("Bearer ", "")
+                )
                 required_scopes = __getRequiredScopes()
 
-                if accessToken == "": abort(401)
+                if accessToken == "":
+                    abort(401)
                 if required_scopes is None:
                     return f(*args, **kwargs)
                 else:
