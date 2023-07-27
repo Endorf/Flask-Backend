@@ -24,6 +24,7 @@ class ClientTokenValidator(JWTBearerTokenValidator):
             "iss": {"essential": True, "value": issuer}
         }
 
+
 require_auth = requireAuthFactory("http://127.0.0.1:8080/realms/myorg")
 # require_auth = ResourceProtector()
 # validator = ClientTokenValidator("http://localhost:8080/realms/myorg")

@@ -66,14 +66,16 @@ def signup():
         password = request.form.get('password')
 
         accessToken = _retrieveAdminAccessToken()
+
         if(accessToken == ""):
             abort(404)
         else:
             isSuccesfullySubmited = _submitNewUser(email, password, accessToken)
             if (isSuccesfullySubmited):
                 isSuccesfullyAuthenticateed = _authenticateUser(email, password)
+
                 if(isSuccesfullyAuthenticateed):
-                    return redirect(url_for("dashboard")) 
+                    return redirect(url_for("dashboard"))
 
 
         return render_template("public/signup.html")
@@ -116,13 +118,13 @@ def _submitNewUser(email, password, accessToken):
             "value": password,
             "temporary": False
         }],
-        "groups":[]
+        "groups": []
     }
     headers = {
         'Authorization': "Bearer " + accessToken,
         'Content-Type': "application/json; charset=utf-8",
     }
-    url =  appConf.get("OAUTH2_ISSUER_HOST") + "/admin/realms/myorg/users"
+    url = appConf.get("OAUTH2_ISSUER_HOST") + "/admin/realms/myorg/users"
 
     accessTokenResp = requests.post(
         url,
@@ -168,7 +170,7 @@ def signin():
         password = request.form.get('password')
         isSuccesfullyAuthenticateed = _authenticateUser(email, password)
         if(isSuccesfullyAuthenticateed):
-            return redirect(url_for("dashboard")) 
+            return redirect(url_for("dashboard"))
         # if "user" in session:
         #     abort(404)
         # return oauth.notesApp.authorize_redirect(redirect_uri=url_for("callback", _external=True))
@@ -231,13 +233,13 @@ def loggedOut():
 def dashboard():
     print("dashboard")
     if "user" in session:
-            return render_template(
-                "public/index.html",
-                data='',
-                data_expiration=session["user"]["access_token"],
-                details=json.dumps(session.get("user"), indent=4),
-                time=datetime.utcnow().strftime('%H:%M:%S'),
-            )
+        return render_template(
+            "public/index.html",
+            data='',
+            data_expiration=session["user"]["access_token"],
+            details=json.dumps(session.get("user"), indent=4),
+            time=datetime.utcnow().strftime('%H:%M:%S'),
+        )
     # if "user" in session:
     #     if "access_token" in session["user"]:
     #         return render_template(

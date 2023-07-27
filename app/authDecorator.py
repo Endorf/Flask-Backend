@@ -4,10 +4,9 @@ import jwt
 import requests
 from flask import abort, request
 
+
 def requireAuthFactory(issuer=None):
     def require_creds(scopes=None):
-
-
         def __getRequiredScopes():
             if isinstance(scopes, str):
                 return scopes.split(" ")
@@ -20,7 +19,7 @@ def requireAuthFactory(issuer=None):
             allPubKeys = requests.get(pubKeysUrl).json()["keys"]
             reqPubKeyJwk = [x for x in allPubKeys if x["kid"] == kid][0]
             reqPubKey = jwt.algorithms.RSAAlgorithm.from_jwk(
-                json.dumps(reqPubKeyJwk))
+            json.dumps(reqPubKeyJwk))
             return reqPubKey
         
 
@@ -35,7 +34,7 @@ def requireAuthFactory(issuer=None):
                 accessToken,
                 key=pubKey,
                 algorithms=[alg],
-                options={"verify_aud":False}
+                options={"verify_aud": False}
             )
 
             return payload["scope"].split(" ")
@@ -44,11 +43,12 @@ def requireAuthFactory(issuer=None):
         def decorator(f):
             @wraps(f)
             def decorated_function(*args, **kwargs):
-                accessToken = request.headers.get('Authorization', "").replace("Bearer ", "")
+                accessToken = (request.headers.get('Authorization', "")
+                    .replace("Bearer ", ""))
                 required_scopes = __getRequiredScopes()
 
                 if accessToken == "": abort(401)
-                if required_scopes == None: 
+                if required_scopes is None:
                     return f(*args, **kwargs)
                 else:
                     # len(required_scopes) > 0
