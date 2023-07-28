@@ -7,7 +7,6 @@ class Config(object):
     OAUTH2_CLIENT_SECRET = 'BbyZrpYjSf6JRxOEs1tVBFUcYVcfAYIQ'
     OAUTH2_ISSUER = 'http://localhost:8080/realms/myorg'
     OAUTH2_ISSUER_HOST = "http://localhost:8080"
-    FLASK_SECRET = 'somelongrandomstring'
     FLASK_PORT: 5000
 
 

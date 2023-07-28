@@ -1,16 +1,13 @@
+"""
+Sample of using password grant_type.
+"""
 from app import app
-from .service.common import status
 from datetime import datetime
+import json
 from flask import jsonify
 from flask import render_template
 from flask import make_response, redirect, abort, request, session, url_for
-import requests
-from authlib.integrations.flask_client import OAuth
-from .authService import authenticateUser
-from .authService import registerUser
-
-import json
-from urllib.parse import quote_plus, urlencode
+from .authService import authenticateUser, registerUser, logoutUser
 
 # TODO: add token expiration checks
 # TODO: handle errors on UI
@@ -68,21 +65,8 @@ def signin():
 
 @app.route("/logout", methods=["POST"])
 def logout():
-    post_body = f"client_id={ app.config['OAUTH2_CLIENT_ID'] }&client_secret={ app.config['OAUTH2_CLIENT_SECRET'] }&refresh_token={ session['user']['refresh_token'] }"
-    headers = {
-        'Content-Type': "application/x-www-form-urlencoded",
-        'Authorization': "Bearer " + session["user"]["access_token"],
-    }
-    url = app.config['OAUTH2_ISSUER'] + "/protocol/openid-connect/logout"
-
-    accessTokenResp = requests.post(
-        url,
-        data=post_body,
-        headers=headers
-    )
-
-    if(accessTokenResp.ok):
-        session.clear()
+    logoutUser()
+    session.clear()
 
     return redirect(url_for("index"))
 

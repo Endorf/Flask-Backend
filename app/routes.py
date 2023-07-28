@@ -49,3 +49,4 @@ def private():
 def private_scoped():
     response = "Authorization is required test_api_access scope"
     return jsonify(message=response)
+
