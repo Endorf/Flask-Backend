@@ -24,3 +24,5 @@ class DevelopmentConfig(Config):
     DATABASE = 'dev_db'
     DEBUG = True
     TESTING = True
+    OAUTH2_CLIENT_ID = "test_notes_app"
+    OAUTH2_CLIENT_SECRET = 'shL4WKtyTxnOd4OETncF13vo36GfsW5S'
