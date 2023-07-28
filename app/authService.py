@@ -1,6 +1,20 @@
 from app import app
-from flask import make_response, redirect, abort, request, session, url_for
+from flask import session
 import requests
+
+def logoutUser():
+    post_body = f"client_id={ app.config['OAUTH2_CLIENT_ID'] }&client_secret={ app.config['OAUTH2_CLIENT_SECRET'] }&refresh_token={ session['refresh_token'] }"
+    headers = {
+        'Content-Type': "application/x-www-form-urlencoded",
+        'Authorization': "Bearer " + session["access_token"],
+    }
+    url = app.config['OAUTH2_ISSUER'] + "/protocol/openid-connect/logout"
+
+    requests.post(
+        url,
+        data=post_body,
+        headers=headers
+    )
 
 def authenticateUser(email, password):
     post_body = f"client_id={ app.config['OAUTH2_CLIENT_ID'] }&client_secret={ app.config['OAUTH2_CLIENT_SECRET'] }&grant_type=password&scope=email roles profile&username={email.split('@')[0]}&password={password}"
@@ -13,7 +27,6 @@ def authenticateUser(email, password):
         headers=headers
     )
     accessTokenRespJson = accessTokenResp.json()
-    print(f"${accessTokenRespJson}")
 
     if not "access_token" in accessTokenRespJson:
         return False
