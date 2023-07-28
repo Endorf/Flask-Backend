@@ -5,9 +5,10 @@ from urllib.request import urlopen
 from authlib.integrations.flask_oauth2 import ResourceProtector
 from authlib.jose.rfc7517.jwk import JsonWebKey
 from authlib.oauth2.rfc7523 import JWTBearerTokenValidator
-from flask import Flask, jsonify
+from flask import jsonify, request, session
 
 from .authDecorator import requireAuthFactory
+from .service.auth import authenticateUser
 
 
 class ClientTokenValidator(JWTBearerTokenValidator):
@@ -50,3 +51,17 @@ def private_scoped():
     response = "Authorization is required test_api_access scope"
     return jsonify(message=response)
 
+
+@app.route("/api/auth")
+def auth():
+    user = request.args.get('user')
+    password = request.args.get('password')
+
+    print(f"{user} : {password}")
+
+    data = authenticateUser(email=user, password=password)
+    print(f"{data} ")
+
+    response = session['user']
+    
+    return jsonify(message=response)
