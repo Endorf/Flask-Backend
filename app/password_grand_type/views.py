@@ -3,7 +3,7 @@ Sample of using password grant_type.
 """
 from app import app
 from datetime import datetime
-from .service.common import status
+from ..service.common import status
 import json
 from flask import jsonify
 from flask import render_template
