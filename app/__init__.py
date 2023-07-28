@@ -10,5 +10,5 @@ else:
 
 app.secret_key = os.urandom(24)
 
-from app.password_grand_type import views
+from app.main import view
 from app import routes
