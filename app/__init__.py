@@ -10,5 +10,8 @@ else:
 
 app.secret_key = os.urandom(24)
 
+from app.auth import view
+from app.auth import routes
+from app.dashboard import view
 from app.main import view
-from app import routes
+from app.main import routes
