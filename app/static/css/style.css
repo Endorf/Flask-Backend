@@ -8,10 +8,10 @@
 }
 
 .wrap-container {
-    padding: 60px 30px;
-    width: 600px;
+    padding: 20px 30px;
     background-color: #fff;
     border-radius: 4px;
+    width:600px;
     box-shadow: 1px 1px 6px rgb(0 0 0 / 25%);
     display: flex;
     flex-direction:column;
@@ -33,6 +33,22 @@
     border-color: rgb(8,124,252, .3);
     border-radius: 0.35rem;
 }
+
+.btn-auth-submit {
+    margin-top: 38px;
+}
+
+.div-sign-up-redirect-container {
+    text-align: center;
+    padding: 30px;
+}
+.lnk-sign-up-redirect {
+    padding: 0px;
+}
+.btn-sign-ip-redirect {
+    padding: 40px;
+}
+
 .btn-sign-with {
     background:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png') no-repeat left center;
     background-padding: 10px;
@@ -48,8 +64,6 @@
     padding-left: 160px;
 }
 
-
-
 .new-row {
     flex-wrap: initial;
 }
@@ -58,9 +72,25 @@
     width:70px;
     vertical-align: top;
 }
-
-.main-table-text-content {
+.main-table-text-content-token {
+    white-space: pre;
+    height:50px;
+    width:1020px;
+    overflow-y:scroll;
+    overflow-x:scroll;
+    display:block;
 }
+
+.main-table-text-content-details {
+    white-space: pre;
+    height:300px;
+    width:1020px;
+    overflow-y:scroll;
+    overflow-x:scroll;
+    display:block;
+}
+.main-table-text-content {}
+
 .text-title {
   height: 100px;
   line-height: 100px;

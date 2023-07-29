@@ -1,0 +1,35 @@
+{% extends "public/templates/public_template.html" %}
+
+{% block title %} Log in {% endblock %}
+
+
+{% block main %}
+
+<div class="wrap-container">
+
+    <h1>Registration</h1>
+
+    <div class="container">
+
+        <form action="/signup" method="POST">
+
+            <div class="form-group">
+                <label>Email</label>
+                <input class="form-control" type="text" name="email" value="">
+            </div>
+            <div>
+                <label>Password</label>
+                <input class="form-control" type="password" name="password" value="">
+            </div>
+
+            <button  type="submit" class="btn btn-auth-submit btn-primary">Enter</button>
+
+        </form>
+
+        <div class="div-sign-up-redirect-container">    
+            <a href="/signin">Already have an account?</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

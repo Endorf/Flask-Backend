@@ -1,5 +1,5 @@
 import pytest
-from app.views import app
+from app.password_grand_type.views import app
 from app.service.common import status
 
 
